@@ -121,9 +121,11 @@ def upgrade_string(lines: list, violation: Violation):
 def upgrade_file(source_file: SourceFile):
     lines = source_file.source.splitlines()
 
+    violation = None
     for violation in list_violations(source_file):
         upgrade_string(lines, violation)
-    else:
+
+    if not violation:
         return
 
     with open(source_file.path, "w") as f:
