@@ -123,8 +123,7 @@ def upgrade_file(source_file: SourceFile):
 
     for violation in list_violations(source_file):
         upgrade_string(lines, violation)
-
-    if not violation:
+    else:
         return
 
     with open(source_file.path, "w") as f:

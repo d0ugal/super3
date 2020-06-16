@@ -24,6 +24,22 @@ def test_upgrade():
     assert expected == result
 
 
+def test_upgrade_no_change():
+
+    source_file = main.load_file(OUTPUT)
+    lines = source_file.source.splitlines()
+    for violation in main.list_violations(source_file):
+        main.upgrade_string(lines, violation)
+
+    with open(OUTPUT) as f:
+        expected = f.read()
+
+    # TODO: This newline handling needs fixed
+    result = "\n".join(lines) + "\n"
+
+    assert expected == result
+
+
 def test_has_violations_positive():
     assert main.has_violation(main.load_file(INPUT))
 
