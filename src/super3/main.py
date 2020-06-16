@@ -61,7 +61,7 @@ def _iter_violations(root):
             if [getattr(a, "id", False) for a in node.args] != [class_def.name, "self"]:
                 continue
         except:
-            #TODO: handle
+            # TODO: handle
             raise
 
         yield node
@@ -91,6 +91,7 @@ def walk_files(path):
             if _is_python(filename):
                 yield os.path.join(root, filename)
 
+
 def load_file(file):
     with open(file) as f:
         source = f.read()
@@ -107,9 +108,15 @@ def read_files(path):
 
 
 def upgrade_string(lines: list, violation: Violation):
-    lineno = violation.lineno -1
+    lineno = violation.lineno - 1
 
-    lines[lineno] = lines[lineno][:violation.col_offset] + "super()" + lines[lineno][violation.end_col_offset:]
+    # This is nasty. Need to find a better way to do this.
+    lines[lineno] = (
+        lines[lineno][: violation.col_offset]
+        + "super()"
+        + lines[lineno][violation.end_col_offset :]
+    )
+
 
 def upgrade_file(source_file: SourceFile):
     lines = source_file.source.splitlines()

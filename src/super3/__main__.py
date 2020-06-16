@@ -79,9 +79,9 @@ def cli(list_files: bool, list: bool, check: bool, paths: Tuple[str, ...]):
                 main.upgrade_file(source_file)
 
     if has_violations:
-        raise click.ClickException("Oh no! 🦹‍♀️🦹‍♂️")
+        raise click.ClickException("Oh no! 🔥")
     else:
-        print("All done! 🦸‍♀️🦸‍♂️")
+        print("All done! 👍")
 
 
 if __name__ == "__main__":
