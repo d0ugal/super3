@@ -61,6 +61,11 @@ def _iter_violations(root):
         if len(node.args) != 2:
             continue
 
+        if not isinstance(node.args[0], ast.Name):
+            # Super is likely being passed something like object.Class. This is
+            # generally a more complex case than we want to handle
+            continue
+
         if node.args[0].id != class_def.name:
             # using super with a explicit name that isn't the current class, it
             # can't be removed.
