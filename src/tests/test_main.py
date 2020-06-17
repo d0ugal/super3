@@ -55,4 +55,5 @@ def test_list_violations():
     assert [
         main.Violation(col_offset=8, end_col_offset=22, lineno=12, end_lineno=12,),
         main.Violation(col_offset=8, end_col_offset=22, lineno=17, end_lineno=17,),
+        main.Violation(col_offset=8, end_col_offset=21, lineno=32, end_lineno=32,),
     ] == list(main.list_violations(input_code))

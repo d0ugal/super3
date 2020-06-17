@@ -16,3 +16,17 @@ class C(A, B):
     def __init__(self):
         super().__init__()
         super(B, self).__init__()
+
+    def some_method(self):
+        try:
+            pass
+        except:
+            pass
+        else:
+
+            def _wrapped():
+                return super(C, self).__init__()
+
+    @classmethod
+    def a_class_method(cls):
+        super().something()

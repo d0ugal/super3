@@ -20,11 +20,11 @@ class SourceFile:
     tree = attr.ib()
 
 
-def find_class(node):
+def find_parent(node, type):
     parent = getattr(node, "parent", None)
     while parent:
         node = parent
-        if isinstance(node, ast.ClassDef):
+        if isinstance(node, type):
             return node
         parent = getattr(node, "parent", None)
 
@@ -51,24 +51,38 @@ def _iter_violations(root):
         if not node.args:
             continue
 
-        class_def = find_class(node)
+        fn_def = find_parent(node, ast.FunctionDef)
+        class_def = find_parent(node, ast.ClassDef)
         # Method isn't in a class. this is likely due to some metaprogramming
         # or something too advanced for us to detect.
-        if not class_def:
+        if not fn_def or not class_def:
             continue
 
-        try:
-            if [getattr(a, "id", False) for a in node.args] != [class_def.name, "self"]:
-                continue
-        except:
-            # TODO: handle
-            raise
+        if len(node.args) != 2:
+            continue
+
+        if node.args[0].id != class_def.name:
+            # using super with a explicit name that isn't the current class, it
+            # can't be removed.
+            continue
+
+        if node.args[1].id not in ("self", "cls"):
+            # Only handle super calls with the conventional variable names
+            continue
+
+        # yo dawg, I heard you like args...
+        if not fn_def.args.args or fn_def.args.args[0].arg not in ("self", "cls"):
+            # we might be in a staticmethod or another method without the self
+            # or cls. We might miss some cases here, but lets be safe and
+            # ignore these for now.
+            continue
 
         yield node
 
 
 def _parse(source):
-    # TODO: Handle syntax errors here. We will get that with Python 2 code.
+    # TODO: Handle syntax errors here. We will get that with Python 2 or other
+    # invalid code.
     return ast.parse(source)
 
 
